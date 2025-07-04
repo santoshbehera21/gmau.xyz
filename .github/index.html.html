@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageSpeed Insights Bulk Tester</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a237e, #4a148c);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4285f4, #34a853);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .control-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .url-section {
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .url-header {
+            background: #4285f4;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .url-input {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            font-size: 1.1rem;
+            resize: vertical;
+            min-height: 250px;
+            font-family: monospace;
+            background: white;
+        }
+        
+        .options-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: #f1f3f4;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .api-key-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #444;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .api-key-input {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .api-key-input:focus {
+            border-color: #4285f4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+            outline: none;
+        }
+        
+        .strategy-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .btn-strategy {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f1f3f4;
+            color: #444;
+        }
+        
+        .btn-strategy:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-strategy.active {
+            background: linear-gradient(to right, #4285f4, #34a853);
+            color: white;
+            box-shadow: 0 4px 10px rgba(66, 133, 244, 0.4);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn-run {
+            background: linear-gradient(to right, #ea4335, #fbbc05);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn-run:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(234, 67, 53, 0.4);
+        }
+        
+        .btn-run:disabled {
+            background: #b0b0b0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-export {
+            background: linear-gradient(to right, #34a853, #4285f4);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn-export:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(66, 133, 244, 0.4);
+        }
+        
+        .btn-export:disabled {
+            background: #b0b0b0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+            height: 16px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #34a853, #4285f4);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            animation: progressAnimation 1.5s infinite;
+        }
+        
+        @keyframes progressAnimation {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .results-container {
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .results-header {
+            display: grid;
+            grid-template-columns: 50px 2fr 1fr 1fr;
+            background: #4285f4;
+            color: white;
+            font-weight: 600;
+            padding: 18px 25px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .result-item {
+            display: grid;
+            grid-template-columns: 50px 2fr 1fr 1fr;
+            padding: 18px 25px;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .result-item.low-score {
+            background: #fff8f8;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .result-item.processing {
+            background: #f5f9ff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-item.processing::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(66, 133, 244, 0.1), transparent);
+            animation: processingAnimation 1.5s infinite;
+        }
+        
+        @keyframes processingAnimation {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes pulse {
+            0% { background-color: #fff8f8; }
+            50% { background-color: #ffecec; }
+            100% { background-color: #fff8f8; }
+        }
+        
+        .result-serial {
+            font-weight: 600;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .result-url {
+            font-weight: 500;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-url i {
+            color: #4285f4;
+            min-width: 24px;
+        }
+        
+        .result-device {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .result-score {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .score-90-100 { color: #34a853; }
+        .score-75-89 { color: #fbbc05; }
+        .score-50-74 { color: #ea4335; }
+        .score-0-49 { 
+            color: #d93025; 
+            font-weight: 800;
+            text-shadow: 0 0 3px rgba(217,48,37,0.3);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 1rem;
+            border-top: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .status-message {
+            text-align: center;
+            padding: 30px;
+            color: #555;
+            font-size: 1.2rem;
+        }
+        
+        .warning-badge {
+            display: inline-block;
+            background: #ea4335;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-left: 10px;
+            animation: blink 1.5s infinite;
+        }
+        
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .export-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: #34a853;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: #ea4335;
+        }
+        
+        .info-tip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        
+        .info-tip .tooltip {
+            visibility: hidden;
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+        
+        .info-tip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .processing-indicator {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            color: #4285f4;
+        }
+        
+        .speed-indicators {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 10px 0;
+        }
+        
+        .speed-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #f5f9ff;
+            font-weight: 500;
+        }
+        
+        .speed-indicator .value {
+            font-weight: 700;
+            color: #4285f4;
+        }
+        
+        .cancel-btn {
+            background: #ea4335;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+        }
+        
+        .cancel-btn:hover {
+            background: #d93025;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Export completed successfully!</span>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bolt"></i> PageSpeed Bulk Tester</h1>
+            <div class="subtitle">Test multiple URLs and export results to CSV with one click - Optimized for Speed</div>
+        </header>
+        
+        <div class="content">
+            <div class="control-panel">
+                <div class="url-section">
+                    <div class="url-header">
+                        <i class="fas fa-link"></i> URLs to Test
+                        <div class="info-tip">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">Enter one URL per line. Maximum of 100 URLs per test. Processing up to 10 URLs simultaneously for speed.</div>
+                        </div>
+                    </div>
+                    <textarea class="url-input" id="urls" placeholder="Enter one URL per line (max 100)">https://google.com
+https://youtube.com
+https://amazon.com
+https://wikipedia.org
+https://github.com
+https://microsoft.com
+https://apple.com
+https://twitter.com
+https://instagram.com
+https://linkedin.com</textarea>
+                </div>
+                
+                <div class="options-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-key"></i> API Configuration
+                            <div class="info-tip">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="tooltip">Get your API key from Google Cloud Console. Required for testing.</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="api-key-group">
+                                <label for="api-key"><i class="fas fa-lock"></i> PageSpeed API Key:</label>
+                                <input type="text" class="api-key-input" id="api-key" placeholder="Enter your API key">
+                            </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <label><i class="fas fa-mobile-alt"></i> Testing Strategy:</label>
+                                <div class="strategy-buttons">
+                                    <button class="btn-strategy active" id="btn-mobile">
+                                        <i class="fas fa-mobile-alt"></i> Mobile
+                                    </button>
+                                    <button class="btn-strategy" id="btn-desktop">
+                                        <i class="fas fa-desktop"></i> Desktop
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn-run" id="run-tests">
+                            <i class="fas fa-bolt"></i> TEST NOW
+                        </button>
+                        <button class="btn-export" id="export-csv" disabled>
+                            <i class="fas fa-file-csv"></i> EXPORT CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="speed-indicators">
+                <div class="speed-indicator">
+                    <i class="fas fa-microchip"></i> Processing: <span class="value" id="concurrent-count">10</span> URLs concurrently
+                </div>
+                <div class="speed-indicator">
+                    <i class="fas fa-history"></i> Estimated time: <span class="value" id="estimated-time">5</span> seconds
+                </div>
+            </div>
+            
+            <div class="progress-header">
+                <div class="progress-info">
+                    <div>
+                        <i class="fas fa-sync-alt"></i> Progress: <span id="progress-text">0%</span>
+                    </div>
+                    <div>
+                        <i class="fas fa-check-circle"></i> <span id="processed-count">0</span>/<span id="total-count">0</span> URLs
+                    </div>
+                </div>
+                <button class="cancel-btn" id="cancel-tests" style="display: none;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="results-container">
+                <div class="results-header">
+                    <div><i class="fas fa-hashtag"></i> #</div>
+                    <div><i class="fas fa-globe"></i> URL</div>
+                    <div><i class="fas fa-laptop"></i> Device</div>
+                    <div><i class="fas fa-chart-line"></i> Performance Score</div>
+                </div>
+                <div id="results-body">
+                    <div class="status-message">
+                        <i class="fas fa-info-circle"></i> Enter URLs and click "TEST NOW" to start
+                    </div>
+                </div>
+            </div>
+            
+            <div class="export-section">
+                <button class="btn-export" id="final-export" disabled>
+                    <i class="fas fa-download"></i> DOWNLOAD FULL RESULTS (CSV)
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Scores below 50 are highlighted in red with a warning indicator</p>
+            <p>© 2023 PageSpeed Insights Bulk Tester | Super Fast Results</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiKeyInput = document.getElementById('api-key');
+            const urlsInput = document.getElementById('urls');
+            const runButton = document.getElementById('run-tests');
+            const exportCsvBtn = document.getElementById('export-csv');
+            const finalExportBtn = document.getElementById('final-export');
+            const btnMobile = document.getElementById('btn-mobile');
+            const btnDesktop = document.getElementById('btn-desktop');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const processedCount = document.getElementById('processed-count');
+            const totalCount = document.getElementById('total-count');
+            const resultsBody = document.getElementById('results-body');
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            const cancelBtn = document.getElementById('cancel-tests');
+            const concurrentCount = document.getElementById('concurrent-count');
+            const estimatedTime = document.getElementById('estimated-time');
+            
+            let currentStrategy = 'mobile';
+            let testResults = [];
+            let serialNumbers = {};
+            let abortControllers = [];
+            let isTesting = false;
+            const CONCURRENT_REQUESTS = 10; // Process 10 URLs simultaneously
+            
+            // Set up strategy buttons
+            btnMobile.addEventListener('click', () => {
+                btnMobile.classList.add('active');
+                btnDesktop.classList.remove('active');
+                currentStrategy = 'mobile';
+            });
+            
+            btnDesktop.addEventListener('click', () => {
+                btnDesktop.classList.add('active');
+                btnMobile.classList.remove('active');
+                currentStrategy = 'desktop';
+            });
+            
+            runButton.addEventListener('click', startTesting);
+            exportCsvBtn.addEventListener('click', () => exportResults('partial'));
+            finalExportBtn.addEventListener('click', () => exportResults('full'));
+            cancelBtn.addEventListener('click', cancelTesting);
+            
+            function showNotification(message, isError = false) {
+                notificationText.textContent = message;
+                notification.className = 'notification' + (isError ? ' error' : '') + ' show';
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            async function startTesting() {
+                if (isTesting) return;
+                
+                const apiKey = apiKeyInput.value.trim();
+                let urls = urlsInput.value.trim().split('\n')
+                    .map(url => url.trim())
+                    .filter(url => url !== '');
+                
+                // Limit to 100 URLs for performance
+                if (urls.length > 100) {
+                    urls = urls.slice(0, 100);
+                    urlsInput.value = urls.join('\n');
+                    showNotification('Limited to first 100 URLs for performance', true);
+                }
+                
+                if (!apiKey) {
+                    showNotification('Please enter your PageSpeed API key', true);
+                    apiKeyInput.focus();
+                    return;
+                }
+                
+                if (urls.length === 0) {
+                    showNotification('Please enter at least one URL to test', true);
+                    urlsInput.focus();
+                    return;
+                }
+                
+                // Reset UI
+                resultsBody.innerHTML = '';
+                progressBar.style.width = '0%';
+                progressText.textContent = '0%';
+                processedCount.textContent = '0';
+                totalCount.textContent = urls.length;
+                testResults = [];
+                serialNumbers = {};
+                abortControllers = [];
+                isTesting = true;
+                cancelBtn.style.display = 'flex';
+                
+                // Create result items
+                urls.forEach((url, index) => {
+                    const serial = index + 1;
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item processing';
+                    resultItem.innerHTML = `
+                        <div class="result-serial">${serial}</div>
+                        <div class="result-url"><i class="fas fa-globe"></i> ${url}</div>
+                        <div class="result-device">
+                            <i class="fas fa-${currentStrategy === 'mobile' ? 'mobile-alt' : 'desktop'}"></i>
+                            ${currentStrategy === 'mobile' ? 'Mobile' : 'Desktop'}
+                        </div>
+                        <div class="result-score">
+                            <span class="processing-indicator">
+                                <span class="loading"></span> Processing
+                            </span>
+                        </div>
+                    `;
+                    resultsBody.appendChild(resultItem);
+                    
+                    // Store serial number for export
+                    serialNumbers[url] = serial;
+                });
+                
+                // Add results header
+                resultsBody.insertAdjacentHTML('afterbegin', `
+                    <div class="results-header">
+                        <div><i class="fas fa-hashtag"></i> #</div>
+                        <div><i class="fas fa-globe"></i> URL</div>
+                        <div><i class="fas fa-laptop"></i> Device</div>
+                        <div><i class="fas fa-chart-line"></i> Performance Score</div>
+                    </div>
+                `);
+                
+                // Disable button and show loading
+                runButton.disabled = true;
+                runButton.innerHTML = '<span class="loading"></span> PROCESSING...';
+                exportCsvBtn.disabled = true;
+                finalExportBtn.disabled = true;
+                
+                // Calculate estimated time (avg 1.5 seconds per URL)
+                const estimatedSeconds = Math.ceil(urls.length / CONCURRENT_REQUESTS) * 1.5;
+                estimatedTime.textContent = estimatedSeconds;
+                concurrentCount.textContent = CONCURRENT_REQUESTS;
+                
+                // Process URLs in batches
+                const batches = Math.ceil(urls.length / CONCURRENT_REQUESTS);
+                
+                for (let batch = 0; batch < batches; batch++) {
+                    if (!isTesting) break; // Check if canceled
+                    
+                    const startIndex = batch * CONCURRENT_REQUESTS;
+                    const endIndex = Math.min(startIndex + CONCURRENT_REQUESTS, urls.length);
+                    const batchUrls = urls.slice(startIndex, endIndex);
+                    
+                    // Process batch concurrently
+                    const batchPromises = batchUrls.map((url, index) => 
+                        getPageSpeedScore(apiKey, url, startIndex + index)
+                    );
+                    
+                    await Promise.all(batchPromises);
+                    
+                    // Update progress
+                    const processed = Math.min(endIndex, urls.length);
+                    processedCount.textContent = processed;
+                    const progressPercent = Math.round((processed / urls.length) * 100);
+                    progressBar.style.width = `${progressPercent}%`;
+                    progressText.textContent = `${progressPercent}%`;
+                    
+                    // Enable export after first batch
+                    if (batch === 0) {
+                        exportCsvBtn.disabled = false;
+                    }
+                }
+                
+                if (isTesting) {
+                    // Testing completed normally
+                    showNotification(`Testing completed! ${urls.length} URLs processed`);
+                }
+                
+                // Re-enable button
+                runButton.disabled = false;
+                runButton.innerHTML = '<i class="fas fa-bolt"></i> TEST NOW';
+                finalExportBtn.disabled = false;
+                cancelBtn.style.display = 'none';
+                isTesting = false;
+            }
+            
+            function cancelTesting() {
+                if (!isTesting) return;
+                
+                // Abort all ongoing requests
+                abortControllers.forEach(controller => controller.abort());
+                isTesting = false;
+                
+                showNotification('Testing canceled', true);
+                
+                // Re-enable button
+                runButton.disabled = false;
+                runButton.innerHTML = '<i class="fas fa-bolt"></i> TEST NOW';
+                cancelBtn.style.display = 'none';
+                
+                // Update any pending results to canceled
+                document.querySelectorAll('.result-item.processing').forEach(item => {
+                    const urlDiv = item.querySelector('.result-url');
+                    const url = urlDiv.textContent.trim();
+                    
+                    item.classList.remove('processing');
+                    item.querySelector('.result-score').innerHTML = `
+                        <span class="score-0-49">Canceled</span>
+                    `;
+                    
+                    // Update result storage
+                    const existingResult = testResults.find(r => r.url === url);
+                    if (!existingResult) {
+                        testResults.push({
+                            serial: serialNumbers[url],
+                            url: url,
+                            device: currentStrategy,
+                            score: 'Canceled',
+                            status: 'Testing canceled'
+                        });
+                    }
+                });
+            }
+            
+            async function getPageSpeedScore(apiKey, url, index) {
+                if (!isTesting) return;
+                
+                const resultItem = resultsBody.children[index + 1]; // +1 to skip header
+                const controller = new AbortController();
+                abortControllers.push(controller);
+                
+                try {
+                    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${currentStrategy}&key=${apiKey}`;
+                    const response = await fetch(apiUrl, {
+                        signal: controller.signal
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const score = data.lighthouseResult?.categories?.performance?.score;
+                    
+                    if (score === undefined || score === null) {
+                        throw new Error('Score not found in response');
+                    }
+                    
+                    const roundedScore = Math.round(score * 100);
+                    
+                    // Update UI with score
+                    let scoreClass = '';
+                    if (roundedScore >= 90) scoreClass = 'score-90-100';
+                    else if (roundedScore >= 75) scoreClass = 'score-75-89';
+                    else if (roundedScore >= 50) scoreClass = 'score-50-74';
+                    else scoreClass = 'score-0-49';
+                    
+                    resultItem.classList.remove('processing');
+                    resultItem.querySelector('.result-score').innerHTML = `
+                        <span class="${scoreClass}">${roundedScore}</span>
+                        ${roundedScore < 50 ? '<span class="warning-badge">LOW SCORE</span>' : ''}
+                    `;
+                    
+                    // Add highlight for low scores
+                    if (roundedScore < 50) {
+                        resultItem.classList.add('low-score');
+                    }
+                    
+                    // Store result for export
+                    testResults.push({
+                        serial: serialNumbers[url],
+                        url: url,
+                        device: currentStrategy,
+                        score: roundedScore,
+                        status: 'Success'
+                    });
+                    
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        return; // Request was canceled
+                    }
+                    
+                    resultItem.classList.remove('processing');
+                    resultItem.querySelector('.result-score').innerHTML = `
+                        <span class="score-0-49">Error</span>
+                    `;
+                    resultItem.classList.add('low-score');
+                    
+                    // Store result for export
+                    testResults.push({
+                        serial: serialNumbers[url],
+                        url: url,
+                        device: currentStrategy,
+                        score: 'Error',
+                        status: 'Failed: ' + error.message
+                    });
+                }
+                
+                // Remove controller from list
+                const controllerIndex = abortControllers.indexOf(controller);
+                if (controllerIndex !== -1) {
+                    abortControllers.splice(controllerIndex, 1);
+                }
+            }
+            
+            function exportResults(type) {
+                if (testResults.length === 0) {
+                    showNotification('No results to export', true);
+                    return;
+                }
+                
+                // Sort results by serial number to maintain order
+                const sortedResults = [...testResults].sort((a, b) => a.serial - b.serial);
+                
+                // Create CSV content
+                const headers = ['SL No', 'URL', 'Device', 'Performance Score', 'Status'];
+                const csvContent = [
+                    headers.join(','),
+                    ...sortedResults.map(result => 
+                        `${result.serial},"${result.url.replace(/"/g, '""')}",${result.device},${result.score},"${result.status}"`
+                    )
+                ].join('\n');
+                
+                // Create Blob and download
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                
+                if (type === 'partial') {
+                    link.setAttribute('download', `pagespeed-results-${new Date().toISOString().slice(0,10)}-partial.csv`);
+                } else {
+                    link.setAttribute('download', `pagespeed-results-${new Date().toISOString().slice(0,10)}.csv`);
+                }
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('CSV file downloaded successfully!');
+            }
+        });
+    </script>
+</body>
+</html>
